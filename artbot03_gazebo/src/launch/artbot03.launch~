@@ -1,0 +1,32 @@
+<launch>
+
+<!-- load configuration -->
+
+   <rosparam command="load" file="$(find joint_state_controller)/joint_state_controller.yaml" />
+
+<!-- spawn controller -->
+
+   <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner"      output="screen" args="joint_state_controller" />
+
+<!--launch world -->
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+   
+    <arg name="world_name" value="$(find artbot03_gazebo)/src/worlds/track3.world"/>
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="debug" value="false"/>
+    
+  </include>
+
+<!--launch tf broadcasters-->
+
+<node pkg="artbot03_gazebo" name="world_to_odom_tf_broadcaster" type="world_to_odom_tf_broadcaster.py" output="screen"/>	
+
+
+<!--launch motion script-->
+
+  <node pkg="artbot03_gazebo" name="motion_planner3" type="motion_planner3.py" output="screen"/>	
+
+</launch>
